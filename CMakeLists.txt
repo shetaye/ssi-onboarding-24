@@ -35,7 +35,7 @@ project(onboarding C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
-add_executable(onboarding main.c)
+add_executable(onboarding # FIXME #)
 
 pico_set_program_name(onboarding "onboarding")
 pico_set_program_version(onboarding "0.1")

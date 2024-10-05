@@ -96,9 +96,15 @@ FIXME #` with the name of the c file you put all the prior code into.
 
 ## Building
 
-This will be different
+This will be different depending on whether you use VSCode or the CLI.
+
+With the CLI, make a directory called `build`, `cd` into it, run `cmake ..`,
+then run `make`.
 
 ## Uploading
+
+Unplug your pi, hold the button on your pi, plug it in, then move
+`build/onboarding.uf2` into the drive that shows up.
 
 # Part 2: Scheduler
 
