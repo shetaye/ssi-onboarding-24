@@ -2,6 +2,8 @@
 
 Welcome to software! We put code **in space**!!
 
+# Part -1: History
+
 First, some context.
 
 Long ago, SSI designed a CubeSat "framework" called the PyCubed. It was great,
@@ -26,26 +28,67 @@ What does that mean for ***you***? Lots of opportunity to build on what you
 learned in CS 106A, 106B, 107, 107E, etc. etc. and build some **real satellite
 flight code**. Not only is this a *great* learning experience, but it's
 **great** on a resume! SSI software alumni have gone on to NASA, SpaceX, and
-grad school ;).
+grad school ;)
 
 Today we're going to be building a blinking LED. That sounds trivial, but it's a
 good way to get all the tools you need set up.
 
 # Part 0: Install
 
-We recommend using VSCode because it comes with an easy-to-use plugin for the
-Raspberry Pi Pico.
-
-If you *don't* want to use VSCode and instead want to compile via CLI, come talk
-to me (Joseph) since there is a small fix up you need to do to make your build
-environment work with the VSCode plugin.
-
-**IMPORTANT: If you have taken 107E or 140E you might have issues with the
-plugin trying to install the ARM GCC compiler on top of the one you installed
-for class - come talk to us if you're having trouble with this**
+### VSCode
 
 Install VSCode: https://code.visualstudio.com/
 Install the plugin: https://marketplace.visualstudio.com/items?itemName=raspberry-pi.raspberry-pi-pico
+
+### CLI
+
+Lovingly taken from
+[CS140e](https://github.com/dddrrreee/cs140e-24win/blob/main/labs/1-compile)
+
+#### Windows
+
+Use VSCode, sorry!
+
+#### macOS
+
+Use the [cs107e install notes](https://web.archive.org/web/20210414133806/http://cs107e.github.io/guides/install/mac/).
+Note: do not install the python stuff. We will use their custom brew formula!
+
+If you get an error that it can't find `string.h`, you want to set `CPATH`
+to the empty string (see a TA for help if you need it).
+
+#### Linux
+
+For [ubuntu/linux](https://askubuntu.com/questions/1243252/how-to-install-arm-none-eabi-gdb-on-ubuntu-20-04-lts-focal-fossa), ARM recently
+changed their method for distributing the tool change. Now you
+must manually install. As of this lab, the following works:
+
+        wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+
+        sudo tar xjf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -C /usr/opt/
+
+We want to get these binaries on our `$PATH` so we don't have to type the
+full path to them every time. There's a fast and messy option, or a slower
+and cleaner option.
+
+The fast and messy option is to add symlinks to these in your system `bin`
+folder:
+
+        sudo ln -s /usr/opt/gcc-arm-none-eabi-10.3-2021.10/bin/* /usr/bin/
+
+The cleaner option is to add `/usr/opt/gcc-arm-none-eabi-10.3-2021.10/bin` to
+your `$PATH` variable in your shell configuration file (e.g., `.zshrc` or
+`.bashrc`), save it, and `source` the configuration. When you run:
+
+        arm-none-eabi-gcc
+        arm-none-eabi-ar
+        arm-none-eabi-objdump
+
+You should not get a "Command not found" error.
+
+If gcc can't find header files, try:
+
+       sudo apt-get install libnewlib-arm-none-eabi
 
 # Part 1: Blinking LED
 
