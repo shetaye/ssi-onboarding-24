@@ -35,35 +35,31 @@ good way to get all the tools you need set up.
 
 # Part 0: Install
 
-### VSCode
+### MacOS
 
-Install VSCode: https://code.visualstudio.com/
-Install the plugin: https://marketplace.visualstudio.com/items?itemName=raspberry-pi.raspberry-pi-pico
+You will need to use the terminal to install some programs. If you are not
+familiar with a terminal, I recommend first installing [Visual Studio
+Code](https://code.visualstudio.com/). Then, you should use the VS Code
+integrated terminal (tutorial
+[here](https://code.visualstudio.com/docs/terminal/basics)). Ubuntu has a neat
+[tutorial](https://ubuntu.com/tutorials/command-line-for-beginners#4-creating-folders-and-files) on terminal usage - ignore the Ubuntu specific stuff.
 
-### CLI
-
-Lovingly taken from
-[CS140e](https://github.com/dddrrreee/cs140e-24win/blob/main/labs/1-compile)
-
-#### Windows
-
-Use VSCode, sorry!
-
-#### macOS
-
-Install brew:
+Install Homebrew if you don't already have it:
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-Install CMake & Toolchain:
+After installin Homebrew, close and re-open your terminal.
 
+Install CMake & compiler toolchain:
 ```
 brew install cmake
 brew install --cask gcc-arm-embedded
 ```
 
-#### Linux
+Again, after installing both, close and re-open your terminal.
+
+### Linux
 
 For [ubuntu/linux](https://askubuntu.com/questions/1243252/how-to-install-arm-none-eabi-gdb-on-ubuntu-20-04-lts-focal-fossa), ARM recently
 changed their method for distributing the tool change. Now you
@@ -96,6 +92,11 @@ If gcc can't find header files, try:
 
        sudo apt-get install libnewlib-arm-none-eabi
 
+### Windows
+
+Unfortunately, I have not gotten to fully supporting Windows. The best option is
+to install the [compiler toolchain](https://developer.arm.com/downloads/-/gnu-rm) & [CMake](https://cmake.org/download/) according to their respective websites.
+
 # Part 1: Blinking LED
 
 All microcontrollers come with some pins you can turn on and off, communicate
@@ -115,9 +116,18 @@ convenient name in the SDK: `PICO_DEFAULT_LED_PIN`.
 Microcontrollers also come with some timing facilities. For now, all we need to
 use is the sleeping methods, which are exactly like the ones from Python.
 
+## Git
+
+You should create a clone of this repository using VSCode (or a git client of
+your choice). If you are using VSCode, they provide a
+[tutorial](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git) on how
+to do this.
+
+The rest of this guide takes place from within this folder/repository.
+
 ## Code
 
-Put this in your `main.c`
+Put this in `main.c`
 ```c
 #include "pico/stdlib.h"
 
@@ -145,15 +155,64 @@ FIXME #` with the name of the c file you put all the prior code into.
 
 ## Building
 
-This will be different depending on whether you use VSCode or the CLI.
+In a terminal (e.g. the integrated VSCode terminal), make a new directory called
+`build` (at the same level as `CMakeLists.txt` and `main.c`).
 
-With the CLI, make a directory called `build`, `cd` into it, run `cmake ..`,
-then run `make`.
+Your directory structure should look like:
+
+```
+ssi-onboarding-24/
+    build/
+    CMakeLists.txt
+    main.c
+    README.md
+    <whatever other files are in here>
+```
+
+Because of the way we have configured CMake, there is one weird step. Run these
+commands:
+
+```
+mkdir -p ~/.pico-sdk/cmake
+touch ~/.pico-sdk/pico-vscode.cmake
+```
+
+Now, enter `build`, then initialize CMake:
+
+```
+cd build/
+cmake ..
+````
+
+If you are on Mac, you might get a pop-up saying something like "security issue"
+with the two options of "move to trash" and "close." ***DO NOT MOVE TO TRASH!***
+
+Instead, you want to click back into the terminal and press the `Ctrl` and
+`C` keys. Then, navigate to System Settings -> Privacy and Security. Scroll all
+the way to the bottom, then press a button that says "Always Allow" or somethin
+glike that.
+
+Re-run `cmake ..`, and keep repeating this process while pop-ups happen. This is
+a one-time thing.
+the same time.
+
+Once `cmake ..` has finished, run the following from within `build`:
+```
+make
+```
+
+You should now have a file at
+```
+ssi-onboarding-24/
+    build/
+        onboarding.uf2
+```
 
 ## Uploading
 
 Unplug your pi, hold the button on your pi, plug it in, then move
-`build/onboarding.uf2` into the drive that shows up.
+`build/onboarding.uf2` into the drive that shows up. The light should start to
+blink!
 
 # Part 1.5: Github
 
