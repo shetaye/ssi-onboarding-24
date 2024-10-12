@@ -125,6 +125,13 @@ to do this.
 
 The rest of this guide takes place from within this folder/repository.
 
+To download the SDK, you need to run
+```
+git submodule update --init
+```
+from within the cloned repository (e.g. `ssi-onboarding-24`). You will need to
+do this once per clone. You should see a bunch of files appear in `pico-sdk/`.
+
 ## Code
 
 Put this in `main.c`
@@ -143,7 +150,7 @@ int main() {
 }
 ```
 
-## Build system
+## Building
 
 We use **CMake** to build our project. It is like Makefiles for Makefiles.
 Honestly, it isn't pretty, but it works quite well! CMake needs to be aware of
@@ -152,8 +159,6 @@ CMake will build.
 
 For this example, all you need to do is go to `CMakeLists.txt` and replace `#
 FIXME #` with the name of the c file you put all the prior code into.
-
-## Building
 
 In a terminal (e.g. the integrated VSCode terminal), make a new directory called
 `build` (at the same level as `CMakeLists.txt` and `main.c`).
