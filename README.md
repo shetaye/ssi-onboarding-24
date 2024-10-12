@@ -51,6 +51,13 @@ Use VSCode, sorry!
 
 #### macOS
 
+**UPDATE: The Internet Archive (where those cs107e notes are hosted) is down
+because of a cyber attack. Great timing. I'm pretty sure all they have you do
+is:**
+```
+brew install cs107e/cs107e/arm-none-eabi-test
+```
+
 Use the [cs107e install notes](https://web.archive.org/web/20210414133806/http://cs107e.github.io/guides/install/mac/).
 Note: do not install the python stuff. We will use their custom brew formula!
 
@@ -149,6 +156,52 @@ then run `make`.
 Unplug your pi, hold the button on your pi, plug it in, then move
 `build/onboarding.uf2` into the drive that shows up.
 
+# Part 1.5: Github
+
+Now we're going to write code within the actual SSI codebase.
+
+## Git
+
+We will get each of you set up on the GitHub. If you don't already have an
+account, make one [here](https://github.com).
+
+If you have no or little experience with Git, I recommend installing [Github
+Desktop](https://desktop.github.com/download/). We will be running a special
+onboarding session for Git later on.
+
+## Repository
+
+Clone the [SAMWISE FSW
+repository](https://github.com/stanford-ssi/samwise-flight-software) via
+whatever Git client you want
+
 # Part 2: Scheduler
 
-Come talk to me if you're curious!
+The flight software is organized into a state machine. The satellite can be in
+any of several states e.g. "running," "low power," etc.
+
+Each state is associated with tasks that are run regularily (e.g. every half a
+second) while the satellite is in that state e.g. the running state might be
+associated with a "beacon" task.
+
+If a task is associated with the active state, its `task_dispatch` function is
+called at most every `dispatch_period_ms` milliseconds. Additionally, its
+`task_init` function is called as part of satellite boot.
+
+You will also see references to a "slate." The slate is a huge block of
+statically allocated memory. 
+
+For this part, you are going to write your own task.
+
+## Code Navigation
+
+The scheduler code is located in `scheduler/`. It isn't necessary for this part,
+but it might be interesting to you.
+
+The state machine is located in `state_machine/`, with tasks in
+`state_machine/tasks` and states in `state_machine/states`. There is a README in
+`state_machine` that explains how to add new tasks and states.
+
+## Your task
+
+Make it do whatever you want!
