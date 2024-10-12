@@ -51,18 +51,17 @@ Use VSCode, sorry!
 
 #### macOS
 
-**UPDATE: The Internet Archive (where those cs107e notes are hosted) is down
-because of a cyber attack. Great timing. I'm pretty sure all they have you do
-is:**
+Install brew:
 ```
-brew install cs107e/cs107e/arm-none-eabi-test
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-Use the [cs107e install notes](https://web.archive.org/web/20210414133806/http://cs107e.github.io/guides/install/mac/).
-Note: do not install the python stuff. We will use their custom brew formula!
+Install CMake & Toolchain:
 
-If you get an error that it can't find `string.h`, you want to set `CPATH`
-to the empty string (see a TA for help if you need it).
+```
+brew install cmake
+brew install --cask gcc-arm-embedded
+```
 
 #### Linux
 
