@@ -35,7 +35,7 @@ project(onboarding C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
-add_executable(onboarding # FIXME #)
+add_executable(onboarding main.c)
 
 pico_set_program_name(onboarding "onboarding")
 pico_set_program_version(onboarding "0.1")
@@ -46,7 +46,7 @@ pico_enable_stdio_usb(onboarding 1)
 
 # Add the standard library to the build
 target_link_libraries(onboarding
-        pico_stdlib)
+        pico_stdlib hardware_uart pico_util)
 
 # Add the standard include files to the build
 target_include_directories(onboarding PRIVATE
