@@ -8,6 +8,7 @@
 #include "pico/util/queue.h"
 #include "hardware/uart.h"
 #include "hardware/irq.h"
+#include "pico/printf.h"
 /// \tag::uart_advanced[]
 
 #define UART_ID uart0
@@ -40,6 +41,7 @@ void on_uart_rx()
     while (uart_is_readable(UART_ID))
     {
         uint8_t ch = uart_getc(UART_ID);
+        printf("%c", ch);
         queue_try_add(&uart_queue, &ch);
         last_byte_receive_time = get_absolute_time();
     }
@@ -92,7 +94,7 @@ packet_header_t compute_packet_header(const uint8_t *packet, uint16_t len, uint1
  */
 uint16_t receive_into(void *dest, uint16_t num_bytes, uint16_t timeout_ms)
 {
-    uint8_t *dest_ptr; // Convert to char* for arithmetic
+    uint8_t *dest_ptr = (uint8_t *) dest; // Convert to char* for arithmetic
     uint16_t bytes_received = 0;
     for (int i = 0; i < timeout_ms; i++)
     {
@@ -211,7 +213,7 @@ bool packet_handler_write(const uint8_t *packet, uint16_t len, uint16_t seq_num)
     return receive_ack();
 }
 
-bool packet_handler_read(uint8_t *packet)
+uint16_t packet_handler_read(uint8_t *packet)
 {
     uint16_t bytes_received;
 
@@ -219,7 +221,7 @@ bool packet_handler_read(uint8_t *packet)
     if (!receive_syn())
     {
         printf("Syn was not received!\n");
-        return false;
+        return 0;
     }
     send_ack();
 
@@ -230,7 +232,7 @@ bool packet_handler_read(uint8_t *packet)
     if (bytes_received < sizeof(packet_header_t))
     {
         printf("Header was not received!\n");
-        return false;
+        return 0;
     }
     send_ack();
 
@@ -238,7 +240,7 @@ bool packet_handler_read(uint8_t *packet)
     if (header.length > MAX_PACKET_LEN)
     {
         printf("Packet is too long!\n");
-        return false;
+        return 0;
     }
 
     // Read actual packet
@@ -247,20 +249,24 @@ bool packet_handler_read(uint8_t *packet)
     if (bytes_received < header.length)
     {
         printf("Packet was not fully received!\n");
-        return false;
+        return 0;
     }
 
     // Verify checksum
     if (crc32(packet, header.length) != header.checksum)
     {
         printf("Invalid checksum!\n");
-        return false;
+        return 0;
     }
     send_ack();
+
+    return header.length;
 }
 
 int main()
 {
+    stdio_init_all();
+
     // Set the TX and RX pins by using the function select on the GPIO
     // Set datasheet for more information on function select
     gpio_set_function(UART_TX_PIN, UART_FUNCSEL_NUM(UART_ID, UART_TX_PIN));
@@ -297,14 +303,22 @@ int main()
     // OK, all set up.
     // Lets send a basic string out, and then run a loop and wait for RX interrupts
     // The handler will count them, but also reflect the incoming data back with a slight change!
-    const uint8_t msg[] = "THIS IS A TEST PACKET";
-    const uint16_t len = sizeof(msg) - 1;
+    
+    
+    //const uint8_t msg[] = "THIS IS A TEST PACKET";
+//    const uint16_t len = sizeof(msg) - 1;
+    uint8_t msg[100];
 
-    while (1)
-    {
-        packet_handler_write(msg, len, 999);
+    while(1){
+        uint16_t length = packet_handler_read(msg);
+        printf("%d\n", length);
+        
+        for (int i = 0; i < length; i++){
+            printf("%c", msg[i]);
+        }
         sleep_ms(1000);
     }
 }
 
 /// \end:uart_advanced[]
+///
